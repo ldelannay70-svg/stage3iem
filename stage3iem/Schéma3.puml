@@ -1,0 +1,9 @@
+@startuml
+person Lohann
+node github 
+node github_action
+node serveur_prod_site_web
+Lohann --> github
+github --> github_action
+github_action --> serveur_prod_site_web
+@enduml

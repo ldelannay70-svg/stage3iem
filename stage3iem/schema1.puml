@@ -5,16 +5,9 @@ node Githubaction
 node ServeursDEV
 node ServeursRECETTE
 node ServeursPROD
-node Chrome
-node node9
-node node10
 Mick  -->   Github : fichiers
-Mick  -->   Chrome
 Github -->    Githubaction: Script
 Githubaction -->    ServeursDEV
 Githubaction -->    ServeursRECETTE
 Githubaction -->    ServeursPROD
-Chrome -->    ServeursDEV
-Chrome -->    ServeursRECETTE
-Chrome -->    ServeursPROD
 @enduml

@@ -1,0 +1,17 @@
+@startuml
+person Développeur
+person Résponsable_technique
+person Chef_de_projet
+person Client_final
+component Géstionnaire_des_codes_sources
+component Serveur_de_test 
+component Serveur_de_préproduction
+component Serveur_de_production
+Serveur_de_préproduction --> Serveur_de_production
+Client_final --> Serveur_de_préproduction
+Serveur_de_test --> Serveur_de_préproduction
+Résponsable_technique --> Serveur_de_test 
+Chef_de_projet --> Serveur_de_test 
+Développeur --> Géstionnaire_des_codes_sources : Fichiers
+Géstionnaire_des_codes_sources --> Serveur_de_test 
+@enduml
