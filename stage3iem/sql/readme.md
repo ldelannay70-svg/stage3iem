@@ -54,6 +54,7 @@ CREATE TABLE temps (
 );
 
 CREATE TABLE commandes ( 
+    id bigint GENERATED ALWAYS AS IDENTITY,
     prixdevente             int,
     date                    date,
     nom                     varchar(80),
@@ -68,7 +69,7 @@ comment insérer une Commande dans la table Commandes
 
 https://docs.postgresql.fr/11/tutorial-populate.html
 
-INSERT INTO ventes VALUES (DEFAULT, 10, 1, '1994-11-27', 'Dupond', 'Toto');
+INSERT INTO commandes VALUES (DEFAULT, 1450, '2026-11-27', 'Dupond', 'Toto');
 
 comment lister 10 Vente
 
@@ -96,4 +97,41 @@ DELETE from ventes;
 
 ALTER TABLE ventes ADD COLUMN id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY;
 
-DROP TABLE ventes;
+DROP TABLE commandes ;
+
+combien j'ai de clients? 
+
+en sql tu peux compter
+
+select count(*) from ventes; -- combien jai de ventes
+select count(distinct nom) from ventes; -- combien jai de nom distinct
+select count(distinct nom) from commandes; -- combien jai de nom distinct
+
+select count(distinct nom) from ((select distinct nom from ventes) union (select distinct nom from commandes)) a ;
+Mr Dupond a été mal orthographié dans Commandes 'dupond' donc nous n'avons 4 clients, nous en avons 3.
+
+select count(distinct LOWER(nom)) from ((select distinct nom from ventes) union (select distinct nom from commandes)) a ;
+
+
+
+La vraie solution : les extensions (faites pour ça)
+
+Si tu as les droits (ou un admin peut les activer), c'est la voie normale — elles font partie de PostgreSQL officiel, rien d'exotique :
+
+CREATE EXTENSION pg_trgm;
+
+-- opérateur de similarité
+SELECT * FROM commandes WHERE nom % 'toto';          -- trouve totto, totot, etc.
+
+-- ou avec un seuil de similarité (0 à 1)
+SELECT nom, similarity(nom, 'toto') AS score
+FROM commandes
+WHERE similarity(nom, 'toto') > 0.3
+ORDER BY score DESC;
+Il y a aussi fuzzystrmatch qui fournit levenshtein() et soundex() tout prêts.
+
+
+select a.nom, similarity(nom, 'dupond') AS score from ((select distinct nom from ventes) union (select distinct nom from commandes)) a
+ORDER BY score DESC;
+
+select sum (prixunitaire_ttc) from ventes 
